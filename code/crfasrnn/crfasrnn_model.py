@@ -21,12 +21,13 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
-
+import torch
+import torch.nn as nn
 from crfasrnn.crfrnn import CrfRnn
-from crfasrnn.fcn8s import Fcn8s
+#from crfasrnn.fcn8s import Fcn8s
 
 
-class CrfRnnNet(Fcn8s):
+class CrfRnnNet(nn.Module):#Fcn8s):
     """
     The full CRF-RNN network with the FCN-8s backbone as described in the paper:
 
@@ -35,11 +36,20 @@ class CrfRnnNet(Fcn8s):
     ICCV 2015 (https://arxiv.org/abs/1502.03240).
     """
 
-    def __init__(self):
+    def __init__(self, num_labels=0):
         super(CrfRnnNet, self).__init__()
-        self.crfrnn = CrfRnn(num_labels=21, num_iterations=10)
+        self.crfrnn = CrfRnn(num_labels=num_labels, num_iterations=10)
+        
+        self.testing = nn.Linear(num_labels,num_labels)
 
-    def forward(self, image):
-        out = super(CrfRnnNet, self).forward(image)
+    def forward(self, data):
+        #out are unary potential
+        
+        #points are positions + features
+        points = torch.cat([data.pos, data.x], axis=1)
+        out = data.unary_potentials
+                
         # Plug the CRF-RNN module at the end
-        return self.crfrnn(image, out)
+        updated_logits = self.testing(out)#self.crfrnn(points, out)
+        
+        return updated_logits
