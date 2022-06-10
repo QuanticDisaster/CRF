@@ -39,16 +39,16 @@ class CrfRnnNet(nn.Module):#Fcn8s):
     def __init__(self, num_labels=0):
         super(CrfRnnNet, self).__init__()
         self.crfrnn = CrfRnn(num_labels=num_labels, num_iterations=10)
-        
+
     def forward(self, data):
         #out are unary potential
-        
+
         #points are positions + features
         points = torch.cat([data.pos, data.x], axis=1)
         out = data.unary_potentials
-                
+
         # Plug the CRF-RNN module at the end
 
         updated_logits = self.crfrnn(points.cpu(), out.cpu(), data.batch.cpu())[0]
-        
+
         return updated_logits.cpu()
