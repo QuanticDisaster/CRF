@@ -9,9 +9,9 @@ torch, torch-geometric, pandas, matplotlib
 
 ### Step 2: Build CRF-RNN custom op
 
-Run `setup.py` inside the `crfasrnn_pytorch/crfasrnn` directory:
+Run `setup.py` inside the `CRF/code/crfasrnn` directory:
 ```
-$ cd crfasrnn_pytorch/crfasrnn
+$ cd CRF/code/crfasrnn
 $ python setup.py install 
 ``` 
 
