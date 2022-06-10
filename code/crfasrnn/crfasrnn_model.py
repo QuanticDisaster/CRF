@@ -40,8 +40,6 @@ class CrfRnnNet(nn.Module):#Fcn8s):
         super(CrfRnnNet, self).__init__()
         self.crfrnn = CrfRnn(num_labels=num_labels, num_iterations=10)
         
-        self.testing = nn.Linear(num_labels,num_labels)
-
     def forward(self, data):
         #out are unary potential
         
@@ -50,7 +48,7 @@ class CrfRnnNet(nn.Module):#Fcn8s):
         out = data.unary_potentials
                 
         # Plug the CRF-RNN module at the end
-        #updated_logits = self.testing(out)#
-        updated_logits = self.crfrnn(points, out, data.batch)
+
+        updated_logits = self.crfrnn(points.cpu(), out.cpu(), data.batch.cpu())[0]
         
-        return updated_logits
+        return updated_logits.cpu()

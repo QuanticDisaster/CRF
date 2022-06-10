@@ -86,7 +86,7 @@ NUM_FEATURES = len(feat) if feat is not None else 0
 NUM_CLASSES = len(weights)
 
 #Try to work on GPU if available
-device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+device = torch.device('cpu')#torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 print("let's work on :", device)
 if torch.cuda.device_count() > 1:
   print("Let's use", torch.cuda.device_count(), "GPUs!")

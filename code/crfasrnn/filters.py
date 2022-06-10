@@ -40,7 +40,6 @@ class PermutoFunction(torch.autograd.Function):
 
     @staticmethod
     def forward(ctx, q_in, features):
-        import pdb; pdb.set_trace()
         q_out = permuto_cpp.forward(q_in, features)[0]
         ctx.save_for_backward(features)
         return q_out
@@ -66,7 +65,7 @@ def _spatial_features(points, sigma):
     Returns:
         Tensor of shape (n, 3)
     """
-    return points / sigma
+    return points[:,0:3] / sigma
 
 class AbstractFilter(ABC):
     """
