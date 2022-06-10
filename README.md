@@ -5,7 +5,10 @@ This project is an attempt at integrating a CRF layer as a trainable pytorch lay
 
 ### Step 1: install requirements
 
-torch, torch-geometric, pandas, matplotlib
++ torch
++ torch-geometric
++ pandas
++ matplotlib
 
 ### Step 2: Build CRF-RNN custom op
 
