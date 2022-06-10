@@ -50,6 +50,7 @@ class CrfRnnNet(nn.Module):#Fcn8s):
         out = data.unary_potentials
                 
         # Plug the CRF-RNN module at the end
-        updated_logits = self.testing(out)#self.crfrnn(points, out)
+        #updated_logits = self.testing(out)#
+        updated_logits = self.crfrnn(points, out, data.batch)
         
         return updated_logits

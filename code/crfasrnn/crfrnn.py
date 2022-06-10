@@ -80,27 +80,27 @@ class CrfRnn(nn.Module):
             torch.eye(num_labels, dtype=torch.float32)
         )
 
-    def forward(self, image, logits):
+    def forward(self, points, logits, batch=None):
         """
         Perform CRF inference.
 
         Args:
-            image:  Tensor of shape (3, h, w) containing the RGB image
-            logits: Tensor of shape (num_classes, h, w) containing the unary logits
+            points:  Tensor of shape (n, 3 + f) containing the point cloud, f being the number of additionnal features
+            logits: Tensor of shape (n, num_classes) containing the unary logits
         Returns:
             log-Q distributions (logits) after CRF inference
+        
         """
-        if logits.shape[0] != 1:
+        if batch is not None and torch.unique(batch).shape[0] != 1:
             raise ValueError("Only batch size 1 is currently supported!")
 
-        image = image[0]
-        logits = logits[0]
 
-        spatial_filter = SpatialFilter(image, gamma=self.params.gamma)
+        spatial_filter = SpatialFilter(points, gamma=self.params.gamma)
         bilateral_filter = BilateralFilter(
-            image, alpha=self.params.alpha, beta=self.params.beta
+            points, alpha=self.params.alpha, beta=self.params.beta
         )
-        _, h, w = image.shape
+        
+        
         cur_logits = logits
 
         for _ in range(self.num_iterations):
@@ -124,10 +124,10 @@ class CrfRnn(nn.Module):
                 spatial_out + bilateral_out
             )  # Shape: (self.num_labels, -1)
             msg_passing_out = torch.mm(self.compatibility_matrix, msg_passing_out).view(
-                self.num_labels, h, w
+                -1, self.num_labels
             )
 
             # Adding unary potentials
-            cur_logits = msg_passing_out + logits
+            cur_logits = msg_passing_out + logits #TODO : check if logits is really different from cur_logits and if it is expected behavior
 
         return torch.unsqueeze(cur_logits, 0)
