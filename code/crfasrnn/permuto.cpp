@@ -4,8 +4,6 @@
 #include <stdexcept>
 #include "permutohedral.h"
 
-#include <string>
-using namespace std;
 
 /**
  *
@@ -14,8 +12,6 @@ using namespace std;
  * @return Filtered values with shape (n, ???)
  */
 std::vector<at::Tensor> permuto_forward(torch::Tensor input_values, torch::Tensor features) {
-    string strMytestString("hello world");
-    cout << strMytestString;
     auto input_sizes = input_values.sizes();  // (n, ???)
     auto feature_sizes = features.sizes();  // (n, features)
 
@@ -99,8 +95,6 @@ std::vector<at::Tensor> permuto_backward(torch::Tensor grads, torch::Tensor feat
 
     Permutohedral p;
     p.init(features.contiguous().data<float>(), n_feature_dims, n_points);
-    string strMytestString("hello world");
-    cout << strMytestString;
     p.compute(grads_back.data<float>(), grads.contiguous().data<float>(), n_channels, true);
 
     return {grads_back};
